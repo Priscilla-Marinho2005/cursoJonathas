@@ -10,6 +10,7 @@ import {
     LuHouse,
     LuInstagram,
     LuLogOut,
+    LuMenu,
     LuPlay,
     LuSearch,
     LuStar,
@@ -100,6 +101,7 @@ export default function Painel() {
     const [secao, setSecao] = useState<Secao>("inicio");
     const [busca, setBusca] = useState("");
     const [menuAberto, setMenuAberto] = useState(false);
+    const [navAberta, setNavAberta] = useState(false);
     const [modulos, setModulos] = useState(modulosIniciais);
     const [aulaId, setAulaId] = useState<string | null>(null);
     const aluno = useMemo(() => nomeDoAluno(), []);
@@ -128,9 +130,28 @@ export default function Painel() {
         setSecao("inicio");
     }
 
+    function escolherSecao(id: Secao) {
+        setNavAberta(false);
+        if (id === "inicio") irParaInicio();
+        else {
+            setAulaId(null);
+            setSecao(id);
+        }
+    }
+
     return (
         <div className="flex h-dvh flex-col overflow-hidden bg-[#0c0c0c] text-white">
             <header className="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 bg-[#101010] px-4 sm:gap-6 sm:px-6">
+                <button
+                    type="button"
+                    onClick={() => setNavAberta((aberta) => !aberta)}
+                    aria-label={navAberta ? "Fechar menu" : "Abrir menu"}
+                    aria-expanded={navAberta}
+                    className="grid size-9 shrink-0 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/5 hover:text-white sm:hidden"
+                >
+                    {navAberta ? <LuX className="size-5" /> : <LuMenu className="size-5" />}
+                </button>
+
                 <a href="#inicio" className="flex shrink-0 items-center gap-2.5 leading-none">
                     <img src="/logo.png" alt="" className="w-7" />
                     <span>
@@ -202,33 +223,50 @@ export default function Painel() {
                 </div>
             </header>
 
-            <div className="flex min-h-0 flex-1">
+            <div className="relative flex min-h-0 flex-1">
+                {navAberta ? (
+                    <button
+                        type="button"
+                        aria-label="Fechar menu"
+                        onClick={() => setNavAberta(false)}
+                        className="absolute inset-0 z-20 bg-black/60 sm:hidden"
+                    />
+                ) : null}
+
                 <aside
-                    className={`flex shrink-0 flex-col border-r border-white/10 bg-[#111111] ${
-                        aulaId ? "w-18" : "w-23 sm:w-57.5"
-                    }`}
+                    className={`absolute inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col border-r border-white/10 bg-[#111111] transition-transform sm:static ${
+                        navAberta ? "translate-x-0" : "-translate-x-full"
+                    } ${aulaId ? "sm:w-18 sm:translate-x-0" : "sm:w-57.5 sm:translate-x-0"}`}
                 >
-                    <div className={`px-3 pt-6 text-center ${aulaId ? "" : "sm:px-6"}`}>
+                    <div className={`px-6 pt-6 text-center ${aulaId ? "sm:px-3" : ""}`}>
                         <span className="mx-auto grid size-9 place-items-center rounded-full border border-white/15 bg-[#1c1c1c] text-white/45">
                             <LuUser className="size-4" />
                         </span>
-                        {aulaId ? null : (
-                            <>
-                                <p className="mt-3 hidden text-sm font-medium sm:block">{aluno}</p>
-                                <p className="mt-4 hidden text-left text-[11px] font-semibold tracking-[0.16em] text-pine uppercase sm:block">
-                                    Seu progresso
-                                </p>
-                                <div className="mt-2 hidden h-1.5 overflow-hidden rounded-full bg-white/10 sm:block">
-                                    <div className="h-full rounded-full bg-pine" style={{ width: `${progresso}%` }} />
-                                </div>
-                            </>
-                        )}
+                        <p className={`mt-3 text-sm font-medium ${aulaId ? "sm:hidden" : ""}`}>{aluno}</p>
+                        <p
+                            className={`mt-4 text-left text-[11px] font-semibold tracking-[0.16em] text-pine uppercase ${
+                                aulaId ? "sm:hidden" : ""
+                            }`}
+                        >
+                            Seu progresso
+                        </p>
+                        <div
+                            className={`mt-2 h-1.5 overflow-hidden rounded-full bg-white/10 ${aulaId ? "sm:hidden" : ""}`}
+                        >
+                            <div className="h-full rounded-full bg-pine" style={{ width: `${progresso}%` }} />
+                        </div>
                     </div>
 
                     <nav aria-label="Área do aluno" className="mt-6 flex flex-col gap-1 px-2">
                         {menu.map((item) => {
                             const Icone = item.icon;
                             const ativo = !aulaId && secao === item.id;
+                            const alinhamento = `flex items-center justify-start gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                                aulaId ? "sm:justify-center" : ""
+                            }`;
+                            const rotulo = (
+                                <span className={aulaId ? "sm:hidden" : ""}>{item.label}</span>
+                            );
                             if (item.id === "instagram") {
                                 return (
                                     <a
@@ -237,10 +275,11 @@ export default function Painel() {
                                         target="_blank"
                                         rel="noreferrer"
                                         title={item.label}
-                                        className="flex items-center justify-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/70 transition-colors hover:bg-white/5 hover:text-white sm:justify-start"
+                                        onClick={() => setNavAberta(false)}
+                                        className={`${alinhamento} text-white/70 hover:bg-white/5 hover:text-white`}
                                     >
                                         <Icone className="size-5 shrink-0" />
-                                        {aulaId ? null : <span className="hidden sm:inline">{item.label}</span>}
+                                        {rotulo}
                                     </a>
                                 );
                             }
@@ -249,36 +288,28 @@ export default function Painel() {
                                     key={item.id}
                                     type="button"
                                     title={item.label}
-                                    onClick={() => {
-                                        if (item.id === "inicio") irParaInicio();
-                                        else {
-                                            setAulaId(null);
-                                            setSecao(item.id);
-                                        }
-                                    }}
-                                    className={`flex items-center justify-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors sm:justify-start ${
+                                    onClick={() => escolherSecao(item.id)}
+                                    className={`${alinhamento} text-left ${
                                         ativo
                                             ? "bg-pine/10 font-semibold text-pine"
                                             : "text-white/70 hover:bg-white/5 hover:text-white"
                                     }`}
                                 >
                                     <Icone className="size-5 shrink-0" />
-                                    {aulaId ? null : <span className="hidden sm:inline">{item.label}</span>}
+                                    {rotulo}
                                 </button>
                             );
                         })}
                     </nav>
 
-                    {aulaId ? null : (
-                        <div className="mt-auto hidden space-y-2 px-6 py-6 text-xs text-white/40 sm:block">
-                            <a href="#inicio" className="block transition-colors hover:text-white">
-                                Suporte para Alunos
-                            </a>
-                            <a href="#inicio" className="block transition-colors hover:text-white">
-                                Termos de Uso
-                            </a>
-                        </div>
-                    )}
+                    <div className={`mt-auto space-y-2 px-6 py-6 text-xs text-white/40 ${aulaId ? "sm:hidden" : ""}`}>
+                        <a href="#inicio" className="block transition-colors hover:text-white">
+                            Suporte para Alunos
+                        </a>
+                        <a href="#inicio" className="block transition-colors hover:text-white">
+                            Termos de Uso
+                        </a>
+                    </div>
                 </aside>
 
                 <main className={`min-w-0 flex-1 ${aulaId ? "overflow-y-auto lg:overflow-hidden" : "overflow-y-auto"}`}>

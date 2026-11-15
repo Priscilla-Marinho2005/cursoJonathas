@@ -6,15 +6,17 @@ export default function Nav() {
                 {/* Logo */}
                 <a
                     href="#inicio"
-                    className="pointer-events-auto text-left leading-none"
+                    className="pointer-events-auto flex items-center gap-3 text-left leading-none"
                 >
-                    <p className="font-display text-base tracking-[0.16em] text-white sm:text-lg sm:tracking-[0.22em]">
-                        Método Trader
-                    </p>
-
-                    <p className="mt-1 text-[10px] font-semibold tracking-[0.22em] text-white/55 sm:text-sm sm:tracking-[0.28em]">
-                        Jonathas Luz
-                    </p>
+                    <img src="/logo.png" alt="" className="w-7 shrink-0" />
+                    <span>
+                        <p className="font-display text-base tracking-[0.16em] text-white sm:text-lg sm:tracking-[0.22em]">
+                            Método Trader
+                        </p>
+                        <p className="text-[10px] font-semibold tracking-[0.22em] text-white/55 sm:text-sm sm:tracking-[0.28em]">
+                            Jonathas Luz
+                        </p>
+                    </span>
                 </a>
 
                 {/* Navegação */}
@@ -34,7 +36,7 @@ export default function Nav() {
                     </span>
 
                     <a
-                        href="#inscricao"
+                        href="#comecar"
                         className="rounded-sm bg-pine px-2.5 py-2 font-bold tracking-[0.04em] text-white uppercase transition-colors hover:bg-[#3ad484] sm:px-4 sm:py-2.5 sm:tracking-[0.08em]"
                     >
                         Começar agora

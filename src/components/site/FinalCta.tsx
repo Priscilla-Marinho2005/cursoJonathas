@@ -17,7 +17,7 @@ export default function FinalCta() {
                     gestão de risco.
                 </p>
                 <a
-                    href="#inscricao"
+                    href="#comecar"
                     className="mt-8 inline-flex items-center gap-3 rounded-full bg-pine px-7 py-3.5 text-sm font-bold tracking-[0.08em] text-black uppercase shadow-[0_10px_24px_rgba(31,191,106,0.35)] transition-colors hover:bg-[#3ad484]"
                 >
                     Quero começar agora

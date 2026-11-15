@@ -60,15 +60,19 @@ export default function Faq() {
                                         {item.question}
                                     </span>
                                     <LuPlus
-                                        className={`size-4 shrink-0 text-gold transition-transform ${abertoAgora ? "rotate-45" : ""}`}
+                                        className={`size-4 shrink-0 text-gold transition-transform duration-300 ease-out motion-reduce:transition-none ${abertoAgora ? "rotate-45" : ""}`}
                                         aria-hidden="true"
                                     />
                                 </button>
-                                {abertoAgora ? (
-                                    <p className="max-w-2xl pb-5 text-[15px] leading-relaxed text-white/70">
-                                        {item.answer}
-                                    </p>
-                                ) : null}
+                                <div
+                                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none ${abertoAgora ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                                >
+                                    <div className="overflow-hidden">
+                                        <p className="max-w-2xl pb-5 text-[15px] leading-relaxed text-white/70">
+                                            {item.answer}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         );
                     })}
